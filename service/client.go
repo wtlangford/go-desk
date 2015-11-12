@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/nhjk/oauth"
 	desk "github.com/talbright/go-desk"
 	"io"
 	"io/ioutil"
@@ -17,27 +18,56 @@ import (
 type Client struct {
 	client       *http.Client
 	BaseURL      *url.URL
-	UserEmail    string
-	UserPassword string
+	userEmail    string
+	userPassword string
+	consumer     oauth.Consumer
+	token        oauth.Token
+	useOAuth     bool
 	Case         *CaseService
 	Customer     *CustomerService
 	Company      *CompanyService
 	User         *UserService
 	Group        *GroupService
+	MaxRetries   int
 }
 
 func NewClient(httpClient *http.Client, endpointURL string, userEmail string, userPassword string) *Client {
+	cli := newClient(httpClient, endpointURL)
+	cli.UseBasicAuth(userEmail, userPassword)
+	return cli
+}
+
+func NewClientWithOAuth(httpClient *http.Client, endpointURL, consumerKey, consumerSecret, tokenKey, tokenSecret string) *Client {
+	cli := newClient(httpClient, endpointURL)
+	cli.UseOAuth(consumerKey, consumerSecret, tokenKey, tokenSecret)
+	return cli
+}
+
+func newClient(httpClient *http.Client, endpointURL string) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
 	baseURL, _ := url.Parse(fmt.Sprintf("%s/api/%s/", endpointURL, desk.DeskApiVersion))
-	c := &Client{client: httpClient, BaseURL: baseURL, UserEmail: userEmail, UserPassword: userPassword}
+	c := &Client{client: httpClient, BaseURL: baseURL}
 	c.Case = NewCaseService(c)
 	c.Customer = &CustomerService{client: c}
 	c.Company = &CompanyService{client: c}
 	c.User = &UserService{client: c}
 	c.Group = &GroupService{client: c}
+	c.MaxRetries = -1
 	return c
+}
+
+func (c *Client) UseOAuth(consumerKey, consumerSecret, tokenKey, tokenSecret string) {
+	c.consumer = oauth.Consumer{Key: consumerKey, Secret: consumerSecret}
+	c.token = oauth.Token{Key: tokenKey, Secret: tokenSecret}
+	c.useOAuth = true
+}
+
+func (c *Client) UseBasicAuth(userEmail, userPassword string) {
+	c.userEmail = userEmail
+	c.userPassword = userPassword
+	c.useOAuth = false
 }
 
 func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
@@ -62,9 +92,13 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	}
 
 	req, err := http.NewRequest(method, u.String(), buf)
-	req.SetBasicAuth(c.UserEmail, c.UserPassword)
 	if err != nil {
 		return nil, err
+	}
+	if c.useOAuth {
+		c.consumer.Authorize(req, &c.token)
+	} else {
+		req.SetBasicAuth(c.userEmail, c.userPassword)
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -89,6 +123,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
+	var retries = c.MaxRetries
+	limitRetries := retries >= 0
 	for {
 		req.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 		resp, err = c.client.Do(req)
@@ -100,6 +136,11 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 		// if we get a 429 response code we should try the request again
 		// otherwise we simply break out of the loop and continue
 		if resp.StatusCode != 429 {
+			break
+		}
+
+		retries -= 1
+		if limitRetries && retries < 0 {
 			break
 		}
 
