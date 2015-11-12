@@ -3,7 +3,7 @@ package integration_tests
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	types "github.com/talbright/go-desk/types"
+	types "github.com/wtlangford/go-desk/types"
 	"net/url"
 	"testing"
 	"time"

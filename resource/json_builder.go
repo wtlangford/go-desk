@@ -2,7 +2,7 @@ package resource
 
 import (
 	"github.com/lann/builder"
-	. "github.com/talbright/go-desk/types"
+	. "github.com/wtlangford/go-desk/types"
 	"time"
 )
 

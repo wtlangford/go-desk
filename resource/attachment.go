@@ -3,7 +3,7 @@ package resource
 import (
 	"bytes"
 	"encoding/base64"
-	. "github.com/talbright/go-desk/types"
+	. "github.com/wtlangford/go-desk/types"
 	"io/ioutil"
 )
 

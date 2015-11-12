@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/nhjk/oauth"
-	desk "github.com/talbright/go-desk"
+	desk "github.com/wtlangford/go-desk"
 	"io"
 	"io/ioutil"
 	"log"

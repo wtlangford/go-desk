@@ -3,7 +3,7 @@ package resource
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	. "github.com/talbright/go-desk/types"
+	. "github.com/wtlangford/go-desk/types"
 	"testing"
 	"time"
 )

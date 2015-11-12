@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	. "github.com/talbright/go-desk/resource"
+	. "github.com/wtlangford/go-desk/resource"
 	"net/http"
 )
 

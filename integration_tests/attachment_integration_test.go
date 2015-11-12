@@ -2,7 +2,7 @@ package integration_tests
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
-	resource "github.com/talbright/go-desk/resource"
+	resource "github.com/wtlangford/go-desk/resource"
 	"log"
 	"testing"
 )

@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	. "github.com/talbright/go-desk/types"
+	. "github.com/wtlangford/go-desk/types"
 	"net/http"
 	"net/url"
 )

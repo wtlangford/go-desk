@@ -2,7 +2,7 @@ package resource
 
 import (
 	"encoding/json"
-	. "github.com/talbright/go-desk/types"
+	. "github.com/wtlangford/go-desk/types"
 )
 
 // EntryCollection holds the raw json data for embedded resources.

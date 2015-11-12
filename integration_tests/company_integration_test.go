@@ -3,8 +3,8 @@ package integration_tests
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	resource "github.com/talbright/go-desk/resource"
-	types "github.com/talbright/go-desk/types"
+	resource "github.com/wtlangford/go-desk/resource"
+	types "github.com/wtlangford/go-desk/types"
 	"log"
 	"net/url"
 	"testing"

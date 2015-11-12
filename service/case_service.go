@@ -3,7 +3,7 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	. "github.com/talbright/go-desk/resource"
+	. "github.com/wtlangford/go-desk/resource"
 	"net/http"
 	"net/url"
 )

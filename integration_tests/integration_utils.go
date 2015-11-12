@@ -3,9 +3,9 @@ package integration_tests
 import (
 	"fmt"
 	dotenv "github.com/joho/godotenv"
-	resource "github.com/talbright/go-desk/resource"
-	service "github.com/talbright/go-desk/service"
-	types "github.com/talbright/go-desk/types"
+	resource "github.com/wtlangford/go-desk/resource"
+	service "github.com/wtlangford/go-desk/service"
+	types "github.com/wtlangford/go-desk/types"
 	"log"
 	"os"
 	"strconv"

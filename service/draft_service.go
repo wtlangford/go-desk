@@ -1,7 +1,7 @@
 package service
 
 import (
-	. "github.com/talbright/go-desk/resource"
+	. "github.com/wtlangford/go-desk/resource"
 	"net/http"
 )
 
