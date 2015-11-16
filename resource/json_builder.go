@@ -78,31 +78,45 @@ func (b jsonBuilder) AddDomain(value string) jsonBuilder {
 }
 
 func (b jsonBuilder) BuildCustomer() Customer {
-	return builder.GetStructLike(b, Customer{}).(Customer)
+	cust := builder.GetStructLike(b, Customer{}).(Customer)
+	cust.InitializeResource(cust)
+	return cust
 }
 
 func (b jsonBuilder) BuildMessage() Message {
-	return builder.GetStructLike(b, Message{}).(Message)
+	msg := builder.GetStructLike(b, Message{}).(Message)
+	msg.InitializeResource(msg)
+	return msg
 }
 
 func (b jsonBuilder) BuildReply() Reply {
-	return builder.GetStructLike(b, Reply{}).(Reply)
+	rep := builder.GetStructLike(b, Reply{}).(Reply)
+	rep.InitializeResource(rep)
+	return rep
 }
 
 func (b jsonBuilder) BuildCase() Case {
-	return builder.GetStructLike(b, Case{}).(Case)
+	cas := builder.GetStructLike(b, Case{}).(Case)
+	cas.InitializeResource(cas)
+	return cas
 }
 
 func (b jsonBuilder) BuildDraft() Draft {
-	return builder.GetStructLike(b, Draft{}).(Draft)
+	dra := builder.GetStructLike(b, Draft{}).(Draft)
+	dra.InitializeResource(dra)
+	return dra
 }
 
 func (b jsonBuilder) BuildNote() Note {
-	return builder.GetStructLike(b, Note{}).(Note)
+	note := builder.GetStructLike(b, Note{}).(Note)
+	note.InitializeResource(note)
+	return note
 }
 
 func (b jsonBuilder) BuildCompany() Company {
-	return builder.GetStructLike(b, Company{}).(Company)
+	cmp := builder.GetStructLike(b, Company{}).(Company)
+	cmp.InitializeResource(cmp)
+	return cmp
 }
 
 var CaseBuilder = builder.Register(jsonBuilder{}, Case{}).(jsonBuilder)
