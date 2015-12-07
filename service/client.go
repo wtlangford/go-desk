@@ -181,7 +181,8 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 type ErrorResponse struct {
 	Response *http.Response
-	Message  string `json:"message"`
+	Errors   map[string]interface{} `json:"errors"`
+	Message  string                 `json:"message"`
 }
 
 func (r *ErrorResponse) Error() string {
