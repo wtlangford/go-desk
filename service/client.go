@@ -28,6 +28,7 @@ type Client struct {
 	Company      *CompanyService
 	User         *UserService
 	Group        *GroupService
+	Job          *JobService
 	MaxRetries   int
 }
 
@@ -54,6 +55,7 @@ func newClient(httpClient *http.Client, endpointURL string) *Client {
 	c.Company = &CompanyService{client: c}
 	c.User = &UserService{client: c}
 	c.Group = &GroupService{client: c}
+	c.Job = &JobService{client: c}
 	c.MaxRetries = -1
 	return c
 }
@@ -186,9 +188,10 @@ type ErrorResponse struct {
 }
 
 func (r *ErrorResponse) Error() string {
-	return fmt.Sprintf("%v %v: %d %v",
+	errstr, _ := json.Marshal(r.Errors)
+	return fmt.Sprintf("%v %v: %d %v: %v",
 		r.Response.Request.Method, r.Response.Request.URL,
-		r.Response.StatusCode, r.Message)
+		r.Response.StatusCode, r.Message, string(errstr))
 }
 
 func CheckResponse(r *http.Response) error {

@@ -119,6 +119,12 @@ func (b jsonBuilder) BuildCompany() Company {
 	return cmp
 }
 
+func (b jsonBuilder) BuildJob() Job {
+	jb := builder.GetStructLike(b, Job{}).(Job)
+	jb.InitializeResource(jb)
+	return jb
+}
+
 var CaseBuilder = builder.Register(jsonBuilder{}, Case{}).(jsonBuilder)
 var MessageBuilder = builder.Register(jsonBuilder{}, Message{}).(jsonBuilder)
 var ReplyBuilder = builder.Register(jsonBuilder{}, Reply{}).(jsonBuilder)
@@ -126,3 +132,4 @@ var CustomerBuilder = builder.Register(jsonBuilder{}, Customer{}).(jsonBuilder)
 var DraftBuilder = builder.Register(jsonBuilder{}, Draft{}).(jsonBuilder)
 var NoteBuilder = builder.Register(jsonBuilder{}, Note{}).(jsonBuilder)
 var CompanyBuilder = builder.Register(jsonBuilder{}, Company{}).(jsonBuilder)
+var JobBuilder = builder.Register(jsonBuilder{}, Job{}).(jsonBuilder)

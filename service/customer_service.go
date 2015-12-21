@@ -99,6 +99,36 @@ func (c *CustomerService) Update(customer *Customer) (*Customer, *http.Response,
 	return updatedCustomer, resp, err
 }
 
+type MergeOverrides struct {
+	FirstName          string                 `json:"first_name,omitempty"`
+	LastName           string                 `json:"last_name,omitempty"`
+	Company            string                 `json:"company,omitempty"`
+	Title              string                 `json:"title,omitempty"`
+	Description        string                 `json:"description,omitempty"`
+	ExternalID         string                 `json:"external_id,omitempty"`
+	SiteLanguageTypeID string                 `json:"site_language_type_id,omitempty"`
+	CustomFields       map[string]interface{} `json:"custom_fields,omitempty"`
+	Hal
+}
+
+// Merge customers.
+// See Desk API: http://dev.desk.com/API/customers/#merge
+func (c *CustomerService) Merge(customer *Customer, overrides *MergeOverrides, customers ...*Customer) (*Customer, *http.Response, error) {
+	for _, c := range customers {
+		overrides.AddHrefLink("customers", c.GetResourcePath(c).String())
+	}
+	restful := Restful{}
+	mergeJob := new(Customer)
+	path := NewIdentityResourcePath(customer.GetResourceId(), NewCustomer()).SetAction("merge")
+	resp, err := restful.
+		Post(path.Path()).
+		Body(overrides).
+		Json(mergeJob).
+		Client(c.client).
+		Do()
+	return mergeJob, resp, err
+}
+
 // Cases provides a list of cases associated with a customer.
 // See Desk API: http://dev.desk.com/API/customers/#list-cases
 func (c *CustomerService) Cases(id string, params *url.Values) (*Page, *http.Response, error) {
