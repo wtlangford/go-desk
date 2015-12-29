@@ -2,9 +2,11 @@ package service
 
 import (
 	"encoding/json"
-	. "github.com/wtlangford/go-desk/resource"
 	"net/http"
 	"net/url"
+	"strings"
+
+	. "github.com/wtlangford/go-desk/resource"
 )
 
 type CustomerService struct {
@@ -100,33 +102,41 @@ func (c *CustomerService) Update(customer *Customer) (*Customer, *http.Response,
 }
 
 type MergeOverrides struct {
-	FirstName          string                 `json:"first_name,omitempty"`
-	LastName           string                 `json:"last_name,omitempty"`
-	Company            string                 `json:"company,omitempty"`
-	Title              string                 `json:"title,omitempty"`
-	Description        string                 `json:"description,omitempty"`
-	ExternalID         string                 `json:"external_id,omitempty"`
-	SiteLanguageTypeID string                 `json:"site_language_type_id,omitempty"`
-	CustomFields       map[string]interface{} `json:"custom_fields,omitempty"`
+	FirstName    *string                `json:"first_name,omitempty"`
+	LastName     *string                `json:"last_name,omitempty"`
+	Company      *string                `json:"company,omitempty"`
+	Title        *string                `json:"title,omitempty"`
+	Description  *string                `json:"description,omitempty"`
+	ExternalID   *string                `json:"external_id,omitempty"`
+	CustomFields map[string]interface{} `json:"custom_fields,omitempty"`
 	Hal
 }
 
 // Merge customers.
 // See Desk API: http://dev.desk.com/API/customers/#merge
-func (c *CustomerService) Merge(customer *Customer, overrides *MergeOverrides, customers ...*Customer) (*Customer, *http.Response, error) {
+func (c *CustomerService) Merge(customer *Customer, overrides *MergeOverrides, customers ...*Customer) (string, *http.Response, error) {
 	for _, c := range customers {
 		overrides.AddHrefLink("customers", c.GetResourcePath(c).String())
 	}
 	restful := Restful{}
-	mergeJob := new(Customer)
+	hal := new(Hal)
 	path := NewIdentityResourcePath(customer.GetResourceId(), NewCustomer()).SetAction("merge")
 	resp, err := restful.
 		Post(path.Path()).
 		Body(overrides).
-		Json(mergeJob).
+		Json(hal).
 		Client(c.client).
 		Do()
-	return mergeJob, resp, err
+
+	var jobid string
+	if err == nil {
+		bits := strings.Split(hal.GetHrefLink("job"), "/")
+		if len(bits) > 0 {
+			jobid = bits[len(bits)-1]
+		}
+	}
+
+	return jobid, resp, err
 }
 
 // Cases provides a list of cases associated with a customer.
