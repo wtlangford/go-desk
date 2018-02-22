@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/nhjk/oauth"
-	desk "github.com/wtlangford/go-desk"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,6 +11,9 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	desk "github.com/wtlangford/go-desk"
+	"github.com/wtlangford/go-desk/service/oauth"
 )
 
 type Client struct {
